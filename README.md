@@ -17,8 +17,9 @@ npm install @yuriyapostol/dyvo-vue-ui
 
 ```ts
 import { DyvoBadge, DyvoUserBadge } from '@yuriyapostol/dyvo-vue-ui'
-import '@yuriyapostol/dyvo-vue-ui/style.css'
 ```
+
+Component styles are bundled with the package and are applied automatically.
 
 ```vue
 <template>

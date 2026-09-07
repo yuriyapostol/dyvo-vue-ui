@@ -1,7 +1,7 @@
 {
   "name": "@yuriyapostol/dyvo-vue-ui",
   "version": "0.1.0",
-  "description": "Reusable Dyvo Vue UI components",
+  "description": "Reusable Vue UI components",
   "license": "MIT",
   "type": "module",
   "main": "./dist/dyvo-vue-ui.umd.cjs",
@@ -12,14 +12,17 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/dyvo-vue-ui.js",
       "require": "./dist/dyvo-vue-ui.umd.cjs"
-    },
-    "./style.css": "./dist/style.css"
+    }
   },
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "build": "vite build && vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly"
+    "build": "vite build && vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly",
+    "prepare": "npm run build"
   },
   "keywords": [
     "vue",
