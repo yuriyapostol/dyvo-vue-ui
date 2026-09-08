@@ -1,6 +1,6 @@
 # dyvo-vue-ui
 
-Reusable Dyvo Vue UI components.
+Reusable Vue UI components.
 
 ## Installation
 
