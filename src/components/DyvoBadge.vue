@@ -452,8 +452,8 @@ a.dyvo-badge:hover {
 }
 
 .dyvo-badge.color-tip {
-  --dyvo-badge-current-text-color: var(--dyvo-badge-tip-text-color, #18794e);
-  --dyvo-badge-current-bg-color: var(--dyvo-badge-tip-bg-color, color-mix(in srgb, #18794e 14%, transparent));
+  --dyvo-badge-current-text-color: var(--dyvo-badge-tip-text-color, #3451b2);
+  --dyvo-badge-current-bg-color: var(--dyvo-badge-tip-bg-color, color-mix(in srgb, #3451b2 14%, transparent));
   --dyvo-badge-soft-text-color: var(--dyvo-badge-tip-soft-text-color, var(--dyvo-badge-current-text-color));
   --dyvo-badge-soft-bg-color: var(--dyvo-badge-tip-soft-bg-color, var(--dyvo-badge-current-bg-color));
   --dyvo-badge-soft-border-color: var(--dyvo-badge-tip-soft-border-color, transparent);
