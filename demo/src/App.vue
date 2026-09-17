@@ -4,6 +4,9 @@ import { DyvoBadge, DyvoUserBadge } from '../../src'
 const colors = ['info', 'tip', 'warning', 'danger', 'success'] as const
 const variants = ['soft', 'accent', 'solid', 'outline', 'plain'] as const
 const sizes = ['small', 'medium', 'large'] as const
+const paletteColors = ['gray', 'blue', 'green', 'yellow', 'red', 'purple'] as const
+const paletteSteps = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] as const
+const semanticColors = ['info', 'tip', 'success', 'warning', 'danger'] as const
 </script>
 
 <template>
@@ -22,6 +25,53 @@ const sizes = ['small', 'medium', 'large'] as const
         <DyvoBadge text="Stable" color="success" variant="solid" />
         <DyvoBadge text="Experimental" color="warning" variant="outline" />
         <DyvoBadge text="Disabled" color="danger" variant="soft" disabled />
+      </div>
+    </section>
+
+    <section class="demo-section" aria-labelledby="colors-title">
+      <div class="demo-section-heading">
+        <h2 id="colors-title">Colors</h2>
+        <p>Global Dyvo color tokens.</p>
+      </div>
+
+      <div class="demo-color-stack">
+        <div class="demo-color-grid" aria-label="Base color scales">
+          <div class="demo-color-row demo-color-header" aria-hidden="true">
+            <span class="demo-row-label"></span>
+            <div class="demo-color-steps">
+              <span v-for="step in paletteSteps" :key="step">{{ step }}</span>
+            </div>
+          </div>
+
+          <div v-for="paletteColor in paletteColors" :key="paletteColor" class="demo-color-row">
+            <span class="demo-row-label">{{ paletteColor }}</span>
+            <div class="demo-swatches">
+              <div
+                v-for="step in paletteSteps"
+                :key="step"
+                class="demo-swatch"
+                :style="{ '--demo-swatch-color': `var(--dyvo-color-${paletteColor}-${step})` }"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-semantic-grid" aria-label="Semantic colors">
+          <div class="demo-semantic-labels" aria-hidden="true">
+            <span v-for="semanticColor in semanticColors" :key="semanticColor">
+              {{ semanticColor }}
+            </span>
+          </div>
+
+          <div class="demo-semantic-colors">
+            <div
+              v-for="semanticColor in semanticColors"
+              :key="semanticColor"
+              class="demo-semantic-swatch"
+              :style="{ '--demo-swatch-color': `var(--dyvo-color-${semanticColor})` }"
+            ></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -49,7 +99,6 @@ const sizes = ['small', 'medium', 'large'] as const
 
     <section class="demo-section" aria-labelledby="sizes-title">
       <div class="demo-section-heading">
-        <h2 id="sizes-title">Sizes</h2>
         <p>Compact, default, and prominent badge sizes.</p>
       </div>
 
@@ -183,6 +232,80 @@ a {
   gap: 12px;
 }
 
+.demo-color-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.demo-color-grid {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-color-row {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.demo-color-header {
+  align-items: end;
+}
+
+.demo-color-steps {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(24px, 1fr));
+  gap: 4px;
+}
+
+.demo-color-steps span {
+  color: #57606a;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.demo-swatches {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(24px, 1fr));
+  gap: 4px;
+}
+
+.demo-swatch,
+.demo-semantic-swatch {
+  min-height: 22px;
+  border: 1px solid rgba(31, 35, 40, 0.12);
+  border-radius: 4px;
+  background: var(--demo-swatch-color);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.demo-semantic-grid {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-semantic-labels,
+.demo-semantic-colors {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.demo-semantic-labels span {
+  color: #57606a;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.demo-semantic-swatch {
+  min-height: 42px;
+}
+
 .demo-row {
   display: grid;
   grid-template-columns: 86px minmax(0, 1fr);
@@ -232,6 +355,24 @@ a {
   .demo-row {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  .demo-color-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .demo-swatches {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .demo-color-steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .demo-semantic-labels,
+  .demo-semantic-colors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 </style>
