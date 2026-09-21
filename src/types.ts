@@ -4,6 +4,7 @@ export type DyvoBadgeColor =
   | 'warning'
   | 'danger'
   | 'success'
+  | (string & {})
 
 export type DyvoBadgeVariant = 'soft' | 'accent' | 'solid' | 'outline' | 'plain'
 

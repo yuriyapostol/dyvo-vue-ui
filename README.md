@@ -71,7 +71,7 @@ Custom image content can be passed through the `image` slot:
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `text` | `string` | `''` | Text fallback when the default slot is empty. |
-| `color` | `'info' \| 'tip' \| 'warning' \| 'danger' \| 'success'` | `'tip'` | Badge color. |
+| `color` | `string` | `'tip'` | Badge color. Built-in values are `info`, `tip`, `warning`, `danger`, and `success`; custom values resolve to `--dyvo-color-{name}`. |
 | `variant` | `'soft' \| 'accent' \| 'solid' \| 'outline' \| 'plain'` | `'soft'` | Visual style. |
 | `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Badge size. |
 | `verticalAlign` | `'unset' \| 'baseline' \| 'middle' \| 'super' \| 'sub'` | `'unset'` | CSS vertical alignment. |
@@ -123,7 +123,7 @@ If `github` is provided, the profile link defaults to `https://github.com/<handl
 | `avatarSrc` | `string` | `undefined` | Avatar image override. |
 | `avatarAlt` | `string` | `undefined` | Avatar alt text override. |
 | `text` | `string` | `undefined` | Visible label override. |
-| `color` | `'info' \| 'tip' \| 'warning' \| 'danger' \| 'success'` | `'info'` | Badge color. |
+| `color` | `string` | `'info'` | Badge color. Built-in values are `info`, `tip`, `warning`, `danger`, and `success`; custom values resolve to `--dyvo-color-{name}`. |
 | `variant` | `'soft' \| 'accent' \| 'solid' \| 'outline' \| 'plain'` | `'soft'` | Visual style. |
 | `size` | `'small' \| 'medium' \| 'large'` | `'large'` | Badge size. |
 | `base` | `string` | `''` | Prefix for root-relative avatar image paths. |
@@ -149,7 +149,7 @@ The package does not depend on VitePress. Framework-specific integrations can pa
 
 ### Color Tokens
 
-The package includes global color tokens with the `--dyvo-color-` prefix. They are available to projects that import the package, but components do not depend on these tokens yet.
+The package includes global color tokens with the `--dyvo-color-` prefix. Components read these tokens directly, so custom palette names can be used anywhere a component accepts `color`.
 
 Each base color has a central token, such as `--dyvo-color-green`, and a shared `50` to `900` scale generated from that central color. Steps lighter than `500` are mixed toward `--dyvo-color-white`, `500` is the central color, and steps darker than `500` are mixed toward `--dyvo-color-black`.
 
@@ -206,3 +206,64 @@ Semantic tokens:
 --dyvo-color-danger
 --dyvo-color-error
 ```
+
+### Custom Palettes
+
+Use `createDyvoPalette()` when an app should create a full color scale from one value at runtime:
+
+```ts
+import { createDyvoPalette } from '@yuriyapostol/dyvo-vue-ui'
+
+createDyvoPalette({
+  brand: '#7c3aed',
+  ocean: '#0ea5e9'
+}).mount()
+```
+
+This injects tokens such as:
+
+```css
+--dyvo-color-brand
+--dyvo-color-brand-50
+--dyvo-color-brand-100
+--dyvo-color-brand-900
+```
+
+The same color name can then be used like a built-in badge color:
+
+```vue
+<template>
+  <DyvoBadge color="brand" variant="accent">Brand</DyvoBadge>
+  <DyvoBadge class="color-ocean variant-solid">Ocean</DyvoBadge>
+</template>
+```
+
+For build-time or file-based workflows, use `generateDyvoPaletteCss()` and write the returned CSS into your app stylesheet:
+
+```ts
+import { generateDyvoPaletteCss } from '@yuriyapostol/dyvo-vue-ui'
+
+const css = generateDyvoPaletteCss({
+  brand: '#7c3aed'
+})
+```
+
+Generated output follows the same CSS-only recipe used by the built-in colors:
+
+```css
+:root {
+  --dyvo-color-brand: #7c3aed;
+  --dyvo-color-brand-50: color-mix(in srgb, var(--dyvo-color-brand) 10%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-brand-100: color-mix(in srgb, var(--dyvo-color-brand) 20%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-brand-200: color-mix(in srgb, var(--dyvo-color-brand) 40%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-brand-300: color-mix(in srgb, var(--dyvo-color-brand) 60%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-brand-400: color-mix(in srgb, var(--dyvo-color-brand) 80%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-brand-500: var(--dyvo-color-brand);
+  --dyvo-color-brand-600: color-mix(in srgb, var(--dyvo-color-brand) 80%, var(--dyvo-color-black, #000000));
+  --dyvo-color-brand-700: color-mix(in srgb, var(--dyvo-color-brand) 60%, var(--dyvo-color-black, #000000));
+  --dyvo-color-brand-800: color-mix(in srgb, var(--dyvo-color-brand) 40%, var(--dyvo-color-black, #000000));
+  --dyvo-color-brand-900: color-mix(in srgb, var(--dyvo-color-brand) 20%, var(--dyvo-color-black, #000000));
+}
+```
+
+You can also author that block manually. The automatic and manual paths intentionally share the same token shape so a future theme config can generate the same CSS from a larger `defineDyvoTheme()`-style API.

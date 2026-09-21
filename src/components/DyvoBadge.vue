@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, normalizeClass, useAttrs } from 'vue'
+import type { StyleValue } from 'vue'
 import type {
   DyvoBadgeColor,
   DyvoBadgeSize,
@@ -11,17 +12,20 @@ defineOptions({
   inheritAttrs: false
 })
 
-const badgeColors = ['info', 'tip', 'warning', 'danger', 'success'] as const
 const badgeVariants = ['soft', 'accent', 'solid', 'outline', 'plain'] as const
 const badgeSizes = ['small', 'medium', 'large'] as const
 const badgeVerticalAlignments = ['unset', 'baseline', 'middle', 'super', 'sub'] as const
 
-const badgeColorClasses = badgeColors.map((value) => `color-${value}`) as readonly string[]
 const badgeVariantClasses = badgeVariants.map((value) => `variant-${value}`) as readonly string[]
 const badgeSizeClasses = badgeSizes.map((value) => `size-${value}`) as readonly string[]
 const badgeVerticalAlignClasses = badgeVerticalAlignments.map((value) => `vertical-align-${value}`) as readonly string[]
+const colorClassPattern = /^color-([a-z0-9_-]+)$/i
 
 const attrs = useAttrs()
+
+function normalizeColorName(value: string) {
+  return value.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
+}
 
 const props = withDefaults(defineProps<{
   text?: string
@@ -68,8 +72,10 @@ const classConfig = computed(() => {
   let disabled = false
 
   for (const token of classTokens.value) {
-    if (!color && badgeColorClasses.includes(token)) {
-      color = token.replace(/^color-/, '') as DyvoBadgeColor
+    const colorMatch = token.match(colorClassPattern)
+
+    if (!color && colorMatch?.[1]) {
+      color = normalizeColorName(colorMatch[1]) as DyvoBadgeColor
       continue
     }
 
@@ -110,7 +116,7 @@ const classConfig = computed(() => {
 
 const passthroughClassTokens = computed(() => (
   classTokens.value.filter((token) => (
-    !badgeColorClasses.includes(token)
+    !colorClassPattern.test(token)
     && !badgeVariantClasses.includes(token)
     && !badgeSizeClasses.includes(token)
     && !badgeVerticalAlignClasses.includes(token)
@@ -120,6 +126,7 @@ const passthroughClassTokens = computed(() => (
 ))
 
 const resolvedColor = computed(() => classConfig.value.color ?? props.color)
+const resolvedColorName = computed(() => normalizeColorName(resolvedColor.value) || 'tip')
 const resolvedVariant = computed(() => classConfig.value.variant ?? props.variant)
 const resolvedSize = computed(() => classConfig.value.size ?? props.size)
 const resolvedVerticalAlign = computed(() => classConfig.value.verticalAlign ?? props.verticalAlign)
@@ -127,9 +134,16 @@ const resolvedDisabled = computed(() => classConfig.value.disabled || props.disa
 const forcedInteractive = computed(() => classConfig.value.interactive)
 
 const forwardedAttrs = computed(() => {
-  const { class: _class, ...rest } = attrs
+  const { class: _class, style: _style, ...rest } = attrs
   return rest
 })
+
+const badgeStyle = computed<StyleValue>(() => [
+  attrs.style as StyleValue,
+  {
+    '--dyvo-badge-color': `var(--dyvo-color-${resolvedColorName.value}, var(--dyvo-color-tip, #3451b2))`
+  }
+])
 
 const tagName = computed(() => {
   if (props.href && !resolvedDisabled.value) {
@@ -187,7 +201,7 @@ const resolvedImageSrc = computed(() => {
     class="dyvo-badge"
     :class="[
       passthroughClassTokens,
-      `color-${resolvedColor}`,
+      `color-${resolvedColorName}`,
       `variant-${resolvedVariant}`,
       `size-${resolvedSize}`,
       `vertical-align-${resolvedVerticalAlign}`,
@@ -196,6 +210,7 @@ const resolvedImageSrc = computed(() => {
         disabled: resolvedDisabled
       }
     ]"
+    :style="badgeStyle"
     :href="tagName === 'a' ? href : undefined"
     :aria-disabled="resolvedDisabled || undefined"
   >
@@ -221,6 +236,24 @@ const resolvedImageSrc = computed(() => {
 
 <style>
 .dyvo-badge {
+  --dyvo-badge-color: var(--dyvo-color-tip, #3451b2);
+  --dyvo-badge-current-text-color: var(--dyvo-badge-color);
+  --dyvo-badge-current-bg-color: color-mix(in srgb, var(--dyvo-badge-color) 14%, transparent);
+  --dyvo-badge-soft-text-color: var(--dyvo-badge-current-text-color);
+  --dyvo-badge-soft-bg-color: var(--dyvo-badge-current-bg-color);
+  --dyvo-badge-soft-border-color: transparent;
+  --dyvo-badge-accent-text-color: var(--dyvo-badge-current-text-color);
+  --dyvo-badge-accent-bg-color: var(--dyvo-badge-current-bg-color);
+  --dyvo-badge-accent-border-color: var(--dyvo-badge-current-text-color);
+  --dyvo-badge-solid-text-color: var(--dyvo-badge-page-bg, #ffffff);
+  --dyvo-badge-solid-bg-color: var(--dyvo-badge-current-text-color);
+  --dyvo-badge-solid-border-color: var(--dyvo-badge-solid-bg-color);
+  --dyvo-badge-outline-text-color: var(--dyvo-badge-current-text-color);
+  --dyvo-badge-outline-bg-color: transparent;
+  --dyvo-badge-outline-border-color: var(--dyvo-badge-current-text-color);
+  --dyvo-badge-plain-text-color: var(--dyvo-badge-current-text-color);
+  --dyvo-badge-plain-bg-color: transparent;
+  --dyvo-badge-plain-border-color: transparent;
   --dyvo-badge-padding-x: var(--dyvo-badge-medium-padding-x, 12px);
   --dyvo-badge-padding-y: var(--dyvo-badge-medium-padding-y, 0);
   --dyvo-badge-gap: var(--dyvo-badge-medium-gap, 6px);
@@ -431,103 +464,4 @@ a.dyvo-badge:hover {
   padding-inline-start: var(--dyvo-badge-image-space);
 }
 
-.dyvo-badge.color-info {
-  --dyvo-badge-current-text-color: var(--dyvo-badge-info-text-color, #1f2328);
-  --dyvo-badge-current-bg-color: var(--dyvo-badge-info-bg-color, color-mix(in srgb, #1f2328 12%, transparent));
-  --dyvo-badge-soft-text-color: var(--dyvo-badge-info-soft-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-soft-bg-color: var(--dyvo-badge-info-soft-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-soft-border-color: var(--dyvo-badge-info-soft-border-color, transparent);
-  --dyvo-badge-accent-text-color: var(--dyvo-badge-info-accent-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-accent-bg-color: var(--dyvo-badge-info-accent-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-accent-border-color: var(--dyvo-badge-info-accent-border-color, var(--dyvo-badge-info-border-color, var(--dyvo-badge-accent-text-color)));
-  --dyvo-badge-solid-text-color: var(--dyvo-badge-info-solid-text-color, var(--dyvo-badge-page-bg, #ffffff));
-  --dyvo-badge-solid-bg-color: var(--dyvo-badge-info-solid-bg-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-solid-border-color: var(--dyvo-badge-info-solid-border-color, var(--dyvo-badge-solid-bg-color));
-  --dyvo-badge-outline-text-color: var(--dyvo-badge-info-outline-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-outline-bg-color: var(--dyvo-badge-info-outline-bg-color, transparent);
-  --dyvo-badge-outline-border-color: var(--dyvo-badge-info-outline-border-color, var(--dyvo-badge-info-border-color, var(--dyvo-badge-outline-text-color)));
-  --dyvo-badge-plain-text-color: var(--dyvo-badge-info-plain-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-plain-bg-color: var(--dyvo-badge-info-plain-bg-color, transparent);
-  --dyvo-badge-plain-border-color: var(--dyvo-badge-info-plain-border-color, transparent);
-}
-
-.dyvo-badge.color-tip {
-  --dyvo-badge-current-text-color: var(--dyvo-badge-tip-text-color, #3451b2);
-  --dyvo-badge-current-bg-color: var(--dyvo-badge-tip-bg-color, color-mix(in srgb, #3451b2 14%, transparent));
-  --dyvo-badge-soft-text-color: var(--dyvo-badge-tip-soft-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-soft-bg-color: var(--dyvo-badge-tip-soft-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-soft-border-color: var(--dyvo-badge-tip-soft-border-color, transparent);
-  --dyvo-badge-accent-text-color: var(--dyvo-badge-tip-accent-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-accent-bg-color: var(--dyvo-badge-tip-accent-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-accent-border-color: var(--dyvo-badge-tip-accent-border-color, var(--dyvo-badge-tip-border-color, var(--dyvo-badge-accent-text-color)));
-  --dyvo-badge-solid-text-color: var(--dyvo-badge-tip-solid-text-color, var(--dyvo-badge-page-bg, #ffffff));
-  --dyvo-badge-solid-bg-color: var(--dyvo-badge-tip-solid-bg-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-solid-border-color: var(--dyvo-badge-tip-solid-border-color, var(--dyvo-badge-solid-bg-color));
-  --dyvo-badge-outline-text-color: var(--dyvo-badge-tip-outline-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-outline-bg-color: var(--dyvo-badge-tip-outline-bg-color, transparent);
-  --dyvo-badge-outline-border-color: var(--dyvo-badge-tip-outline-border-color, var(--dyvo-badge-tip-border-color, var(--dyvo-badge-outline-text-color)));
-  --dyvo-badge-plain-text-color: var(--dyvo-badge-tip-plain-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-plain-bg-color: var(--dyvo-badge-tip-plain-bg-color, transparent);
-  --dyvo-badge-plain-border-color: var(--dyvo-badge-tip-plain-border-color, transparent);
-}
-
-.dyvo-badge.color-warning {
-  --dyvo-badge-current-text-color: var(--dyvo-badge-warning-text-color, #d68000);
-  --dyvo-badge-current-bg-color: var(--dyvo-badge-warning-bg-color, color-mix(in srgb, #d68000 16%, transparent));
-  --dyvo-badge-soft-text-color: var(--dyvo-badge-warning-soft-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-soft-bg-color: var(--dyvo-badge-warning-soft-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-soft-border-color: var(--dyvo-badge-warning-soft-border-color, transparent);
-  --dyvo-badge-accent-text-color: var(--dyvo-badge-warning-accent-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-accent-bg-color: var(--dyvo-badge-warning-accent-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-accent-border-color: var(--dyvo-badge-warning-accent-border-color, var(--dyvo-badge-warning-border-color, var(--dyvo-badge-accent-text-color)));
-  --dyvo-badge-solid-text-color: var(--dyvo-badge-warning-solid-text-color, var(--dyvo-badge-page-bg, #ffffff));
-  --dyvo-badge-solid-bg-color: var(--dyvo-badge-warning-solid-bg-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-solid-border-color: var(--dyvo-badge-warning-solid-border-color, var(--dyvo-badge-solid-bg-color));
-  --dyvo-badge-outline-text-color: var(--dyvo-badge-warning-outline-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-outline-bg-color: var(--dyvo-badge-warning-outline-bg-color, transparent);
-  --dyvo-badge-outline-border-color: var(--dyvo-badge-warning-outline-border-color, var(--dyvo-badge-warning-border-color, var(--dyvo-badge-outline-text-color)));
-  --dyvo-badge-plain-text-color: var(--dyvo-badge-warning-plain-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-plain-bg-color: var(--dyvo-badge-warning-plain-bg-color, transparent);
-  --dyvo-badge-plain-border-color: var(--dyvo-badge-warning-plain-border-color, transparent);
-}
-
-.dyvo-badge.color-danger {
-  --dyvo-badge-current-text-color: var(--dyvo-badge-danger-text-color, #b8272c);
-  --dyvo-badge-current-bg-color: var(--dyvo-badge-danger-bg-color, color-mix(in srgb, #b8272c 14%, transparent));
-  --dyvo-badge-soft-text-color: var(--dyvo-badge-danger-soft-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-soft-bg-color: var(--dyvo-badge-danger-soft-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-soft-border-color: var(--dyvo-badge-danger-soft-border-color, transparent);
-  --dyvo-badge-accent-text-color: var(--dyvo-badge-danger-accent-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-accent-bg-color: var(--dyvo-badge-danger-accent-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-accent-border-color: var(--dyvo-badge-danger-accent-border-color, var(--dyvo-badge-danger-border-color, var(--dyvo-badge-accent-text-color)));
-  --dyvo-badge-solid-text-color: var(--dyvo-badge-danger-solid-text-color, var(--dyvo-badge-page-bg, #ffffff));
-  --dyvo-badge-solid-bg-color: var(--dyvo-badge-danger-solid-bg-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-solid-border-color: var(--dyvo-badge-danger-solid-border-color, var(--dyvo-badge-solid-bg-color));
-  --dyvo-badge-outline-text-color: var(--dyvo-badge-danger-outline-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-outline-bg-color: var(--dyvo-badge-danger-outline-bg-color, transparent);
-  --dyvo-badge-outline-border-color: var(--dyvo-badge-danger-outline-border-color, var(--dyvo-badge-danger-border-color, var(--dyvo-badge-outline-text-color)));
-  --dyvo-badge-plain-text-color: var(--dyvo-badge-danger-plain-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-plain-bg-color: var(--dyvo-badge-danger-plain-bg-color, transparent);
-  --dyvo-badge-plain-border-color: var(--dyvo-badge-danger-plain-border-color, transparent);
-}
-
-.dyvo-badge.color-success {
-  --dyvo-badge-current-text-color: var(--dyvo-badge-success-text-color, #18794e);
-  --dyvo-badge-current-bg-color: var(--dyvo-badge-success-bg-color, color-mix(in srgb, #18794e 14%, transparent));
-  --dyvo-badge-soft-text-color: var(--dyvo-badge-success-soft-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-soft-bg-color: var(--dyvo-badge-success-soft-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-soft-border-color: var(--dyvo-badge-success-soft-border-color, transparent);
-  --dyvo-badge-accent-text-color: var(--dyvo-badge-success-accent-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-accent-bg-color: var(--dyvo-badge-success-accent-bg-color, var(--dyvo-badge-current-bg-color));
-  --dyvo-badge-accent-border-color: var(--dyvo-badge-success-accent-border-color, var(--dyvo-badge-success-border-color, var(--dyvo-badge-accent-text-color)));
-  --dyvo-badge-solid-text-color: var(--dyvo-badge-success-solid-text-color, var(--dyvo-badge-page-bg, #ffffff));
-  --dyvo-badge-solid-bg-color: var(--dyvo-badge-success-solid-bg-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-solid-border-color: var(--dyvo-badge-success-solid-border-color, var(--dyvo-badge-solid-bg-color));
-  --dyvo-badge-outline-text-color: var(--dyvo-badge-success-outline-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-outline-bg-color: var(--dyvo-badge-success-outline-bg-color, transparent);
-  --dyvo-badge-outline-border-color: var(--dyvo-badge-success-outline-border-color, var(--dyvo-badge-success-border-color, var(--dyvo-badge-outline-text-color)));
-  --dyvo-badge-plain-text-color: var(--dyvo-badge-success-plain-text-color, var(--dyvo-badge-current-text-color));
-  --dyvo-badge-plain-bg-color: var(--dyvo-badge-success-plain-bg-color, transparent);
-  --dyvo-badge-plain-border-color: var(--dyvo-badge-success-plain-border-color, transparent);
-}
 </style>
