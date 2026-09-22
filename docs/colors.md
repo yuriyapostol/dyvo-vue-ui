@@ -8,7 +8,8 @@ This document defines how Dyvo color tokens are named, generated, and consumed b
 - The generated palette can be created automatically with JavaScript or authored manually in CSS.
 - Component color APIs remain class-based: `color="primary"` and `class="color-primary"` resolve to the same component class.
 - Inline color styles are reserved for ad hoc raw CSS color values, not for normal palette usage.
-- The low-level palette generator must stay small enough to become the foundation for a future theme config API.
+- The color layer must work in VitePress themes and in independent rendering engines, including mobile-oriented renderers without VitePress.
+- The low-level palette generator must stay small enough to be reused by a wider theme API.
 
 ## Token Levels
 
@@ -66,11 +67,13 @@ Current default mappings:
 --dyvo-color-error: var(--dyvo-color-danger);
 ```
 
-`tip` is kept for compatibility with VitePress-style naming. New UI examples should prefer `primary`, `secondary`, `info`, `success`, `warning`, and `danger`.
+`info`, `tip`, `warning`, and `danger` align with VitePress-style status naming. They are part of the public color vocabulary so the package can be used inside a VitePress theme without adapter-only renaming.
+
+`primary`, `secondary`, and `success` are broader UI semantic colors. New non-documentation UI examples should prefer `primary`, `secondary`, `info`, `success`, `warning`, and `danger`. `tip` remains available where VitePress-style semantics are useful or compatibility matters.
 
 ## Palette Formula
 
-Every generated palette uses the same scale formula:
+The current generated palette uses this default scale formula:
 
 ```css
 50:  color 10% + white
@@ -94,6 +97,8 @@ The CSS representation uses `color-mix(in srgb, ...)`:
 --dyvo-color-ocean-900: color-mix(in srgb, var(--dyvo-color-ocean) 20%, var(--dyvo-color-black, #000000));
 ```
 
+Future palette generation may support additional strategies when they are useful enough to justify the API surface. Examples include perceptual color spaces such as OKLCH, fixed-step designer palettes, or contrast-aware palettes. Any new strategy must still emit the same public token shape unless a breaking change is explicitly accepted.
+
 ## Automatic Palettes
 
 Use `createDyvoPalette()` to generate and mount palette CSS at runtime:
@@ -106,7 +111,7 @@ createDyvoPalette({
 }).mount()
 ```
 
-This creates:
+This creates color tokens:
 
 ```css
 :root {
@@ -114,20 +119,9 @@ This creates:
   --dyvo-color-ocean-50: ...;
   --dyvo-color-ocean-900: ...;
 }
-
-.dyvo-badge.color-ocean {
-  --dyvo-badge-color: var(--dyvo-color-ocean);
-}
 ```
 
-The component bridge class is part of the generated CSS so component markup can remain class-based:
-
-```vue
-<DyvoBadge color="ocean" />
-<DyvoBadge class="color-ocean" />
-```
-
-Both forms must produce a `color-ocean` class and should not require inline style attributes.
+Palette generation does not include component bridge rules. If a custom palette should be available through a component color class today, author the bridge as CSS next to the palette. A future theme layer may automate that from component metadata.
 
 ## Manual Palettes
 
@@ -147,7 +141,11 @@ A palette may be authored manually by defining the same token shape:
   --dyvo-color-ocean-800: color-mix(in srgb, var(--dyvo-color-ocean) 40%, var(--dyvo-color-black, #000000));
   --dyvo-color-ocean-900: color-mix(in srgb, var(--dyvo-color-ocean) 20%, var(--dyvo-color-black, #000000));
 }
+```
 
+A component bridge may be authored manually next to the palette:
+
+```css
 .dyvo-badge.color-ocean {
   --dyvo-badge-color: var(--dyvo-color-ocean);
 }
@@ -191,7 +189,7 @@ For built-in badge colors:
 }
 ```
 
-For generated custom palettes, `generateDyvoPaletteCss()` creates bridge rules automatically:
+For custom palettes, author equivalent bridge rules manually:
 
 ```css
 .dyvo-badge.color-ocean {
@@ -207,7 +205,7 @@ Future components should follow the same pattern with their own component variab
 }
 ```
 
-## Generator API
+## Palette Generator API
 
 `generateDyvoPaletteCss(colors, options)` returns a CSS string.
 
@@ -216,8 +214,6 @@ Supported options:
 ```ts
 interface DyvoPaletteOptions {
   selector?: string
-  componentSelector?: string
-  includeComponentClasses?: boolean
   prefix?: string
   white?: string
   black?: string
@@ -226,15 +222,19 @@ interface DyvoPaletteOptions {
 ```
 
 - `selector` controls where CSS custom properties are emitted. Default: `:root`.
-- `componentSelector` controls generated component bridge selector. Default: `.dyvo-badge`.
-- `includeComponentClasses` disables bridge class generation when set to `false`.
 - `prefix` controls the token prefix. Default: `dyvo-color`.
 - `white` and `black` override the mix endpoints.
 - `styleId` is used by `createDyvoPalette()` when mounting runtime styles.
 
+## Future Component Bridge Metadata
+
+CSS cannot derive `var(--dyvo-color-ocean)` from a class name like `color-ocean` by itself. A future theme layer may use component metadata to generate bridge rules automatically.
+
+That metadata should remain internal or theme-facing until the Theme API is designed. The current public API should not expose bridge helper functions or bridge types prematurely.
+
 ## Future Theme API
 
-A future `defineDyvoTheme()` API should build on this color layer instead of replacing it.
+A future theme API should include this color layer as one part of a broader system instead of replacing it.
 
 Expected direction:
 
@@ -249,4 +249,4 @@ defineDyvoTheme({
 })
 ```
 
-The theme layer should produce the same CSS token shape and component bridge classes defined in this specification.
+The theme layer should produce the same CSS token shape and component bridge classes defined in this specification. See `docs/themes.md` for the draft theme specification.

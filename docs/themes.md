@@ -1,0 +1,238 @@
+# Theme Specification Draft
+
+This document drafts the future Dyvo theme layer. It is intentionally broader than the color layer and should include colors rather than replace them.
+
+## Goals
+
+- One theme definition can describe colors, semantic aliases, component tokens, typography, spacing, radii, and future design tokens.
+- The same theme can be used in a VitePress theme and in independent rendering engines, including mobile-oriented renderers without VitePress.
+- The theme layer produces stable CSS custom properties that components consume through their normal props and classes.
+- The theme layer reuses the color specification instead of inventing a parallel color system.
+- Runtime, build-time, and manual CSS workflows should remain possible.
+
+## Non-Goals
+
+- The theme API should not require VitePress.
+- The theme API should not force all users into a build plugin.
+- The theme API should not remove direct CSS-token customization.
+- The theme API should not make simple color usage heavier than `color="primary"`.
+
+## Layer Model
+
+The theme layer should be organized as composable layers:
+
+```txt
+theme definition
+  -> token normalization
+  -> color palette generation
+  -> semantic aliases
+  -> component bridge metadata collection
+  -> component token mapping
+  -> CSS output / runtime mount / generated files
+```
+
+The color layer remains the lower-level mechanism for palette generation. Components provide bridge metadata, and the theme layer coordinates color tokens, component bridge rules, and other token groups.
+
+## Draft API Shape
+
+The future API may look like this:
+
+```ts
+import { defineDyvoTheme } from '@yuriyapostol/dyvo-vue-ui/theme'
+
+export default defineDyvoTheme({
+  colors: {
+    ocean: '#0ea5e9',
+    grape: '#6f42c1'
+  },
+  semantic: {
+    primary: 'ocean',
+    secondary: 'gray-500',
+    info: 'gray-800',
+    tip: 'grape',
+    success: 'green',
+    warning: 'yellow',
+    danger: 'red'
+  },
+  components: {
+    badge: {
+      colors: {
+        primary: 'primary',
+        secondary: 'secondary',
+        info: 'info'
+      }
+    }
+  }
+})
+```
+
+The exact field names are not final. The important constraint is that the generated output must follow the public token shapes defined by the color specification.
+
+## Output Contract
+
+A theme must be able to output CSS:
+
+```css
+:root {
+  --dyvo-color-ocean: #0ea5e9;
+  --dyvo-color-ocean-50: ...;
+  --dyvo-color-primary: var(--dyvo-color-ocean);
+}
+
+.dyvo-badge.color-primary {
+  --dyvo-badge-color: var(--dyvo-color-primary);
+}
+```
+
+The output may be created by:
+
+- runtime mounting, similar to `createDyvoPalette().mount()`;
+- build-time generation through a future CLI or bundler plugin;
+- manual CSS authored by a user following the same token contract.
+
+## Color Integration
+
+Themes must use the color layer for:
+
+- base color token naming;
+- `50` to `900` palette generation;
+- semantic color aliases;
+- component color bridge CSS generated from component-provided metadata.
+
+The theme API may expose palette strategy options, but should start conservative.
+
+Possible future palette strategies:
+
+```ts
+defineDyvoTheme({
+  colors: {
+    ocean: {
+      value: '#0ea5e9',
+      palette: 'srgb-mix'
+    },
+    grape: {
+      value: '#6f42c1',
+      palette: 'oklch'
+    }
+  }
+})
+```
+
+This is exploratory. New strategies should be added only when they solve a concrete quality problem, such as poor perceptual balance, weak contrast, or incompatibility with a target renderer.
+
+## Semantic Compatibility
+
+The default semantic color vocabulary should support both general UI and VitePress-style documentation semantics.
+
+General UI semantics:
+
+```txt
+primary
+secondary
+success
+warning
+danger
+info
+```
+
+VitePress-style compatibility semantics:
+
+```txt
+info
+tip
+warning
+danger
+```
+
+The overlap is intentional. A VitePress theme can map its custom blocks directly, while a standalone mobile renderer can use the same tokens without depending on VitePress.
+
+## Modes
+
+Themes should eventually support named modes, especially light and dark:
+
+```ts
+defineDyvoTheme({
+  colors: {
+    ocean: '#0ea5e9'
+  },
+  modes: {
+    dark: {
+      colors: {
+        ocean: '#38bdf8'
+      }
+    }
+  }
+})
+```
+
+Potential CSS output:
+
+```css
+:root {
+  --dyvo-color-ocean: #0ea5e9;
+}
+
+[data-dyvo-theme='dark'] {
+  --dyvo-color-ocean: #38bdf8;
+}
+```
+
+Mode selector naming is not final.
+
+## Component Tokens
+
+Components should keep their own internal custom properties. Themes may map semantic tokens into component-specific variables:
+
+```css
+.dyvo-badge.color-primary {
+  --dyvo-badge-color: var(--dyvo-color-primary);
+}
+```
+
+Future component token groups might include:
+
+```txt
+badge.radius
+badge.paddingX
+badge.fontSize
+button.radius
+button.height
+surface.background
+text.body
+```
+
+These should be added gradually as components need them.
+
+## Environment Targets
+
+The theme layer should be usable in at least these environments:
+
+- VitePress theme integration;
+- Vue apps using the package directly;
+- static HTML generated by a separate renderer;
+- mobile-oriented renderers that can consume CSS variables or a generated token map.
+
+If a target cannot consume CSS variables directly, the theme API may later expose a JSON/token-map output. That output should still be derived from the same theme definition.
+
+## Versioning Rules
+
+Stable:
+
+- public token naming once documented;
+- semantic color names once shipped;
+- generated CSS custom property shape.
+
+Experimental until implemented:
+
+- `defineDyvoTheme()` field names;
+- palette strategy names;
+- mode selector names;
+- non-CSS output formats.
+
+## Open Questions
+
+- Should `tip` remain visible in general docs or only in a compatibility section?
+- Should semantic aliases be generated as direct values or as references to base tokens?
+- Which additional base colors are needed before stabilizing the default palette?
+- Is the current `srgb` palette formula good enough for production defaults, or should OKLCH become the default later?
+- Should the theme layer include bridge metadata for all registered components by default or only for selected components?

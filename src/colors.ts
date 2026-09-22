@@ -2,20 +2,20 @@ export type DyvoPaletteColorMap = Record<string, string>
 
 export interface DyvoPaletteOptions {
   selector?: string
-  componentSelector?: string
-  includeComponentClasses?: boolean
   prefix?: string
   white?: string
   black?: string
   styleId?: string
 }
 
-export interface DyvoMountedPalette {
+export interface DyvoMountedStyle {
   css: string
   element: HTMLStyleElement | null
-  mount: (target?: ParentNode) => DyvoMountedPalette
+  mount: (target?: ParentNode) => DyvoMountedStyle
   unmount: () => void
 }
+
+export type DyvoMountedPalette = DyvoMountedStyle
 
 const paletteSteps = [
   ['50', '10%', 'white'],
@@ -70,77 +70,55 @@ function getPaletteCssRules(colors: DyvoPaletteColorMap, options: DyvoPaletteOpt
   return rules
 }
 
-function getPaletteColorNames(colors: DyvoPaletteColorMap) {
-  return Object.entries(colors)
-    .map(([rawName, rawValue]) => ({
-      name: normalizeTokenName(rawName),
-      value: rawValue.trim()
-    }))
-    .filter(({ name, value }) => name && value)
-}
-
-function getComponentCssRules(colors: DyvoPaletteColorMap, options: DyvoPaletteOptions = {}) {
-  if (options.includeComponentClasses === false) {
-    return []
-  }
-
-  const prefix = normalizePrefix(options.prefix ?? 'dyvo-color')
-  const componentSelector = options.componentSelector ?? '.dyvo-badge'
-
-  return getPaletteColorNames(colors).map(({ name }) => (
-    `${componentSelector}.color-${name} {\n  --dyvo-badge-color: var(--${prefix}-${name});\n}`
-  ))
-}
-
 export function generateDyvoPaletteCss(colors: DyvoPaletteColorMap, options: DyvoPaletteOptions = {}) {
   const selector = options.selector ?? ':root'
   const rules = getPaletteCssRules(colors, options)
-  const componentRules = getComponentCssRules(colors, options)
 
-  if (!rules.length && !componentRules.length) {
+  if (!rules.length) {
     return ''
   }
 
-  const blocks = rules.length ? [`${selector} {\n${rules.join('\n')}\n}`] : []
-  blocks.push(...componentRules)
+  return `${selector} {\n${rules.join('\n')}\n}`
+}
 
-  return blocks.join('\n\n')
+function createDyvoMountedStyle(css: string, styleId: string) {
+  const style: DyvoMountedStyle = {
+    css,
+    element: null,
+    mount(target?: ParentNode) {
+      if (typeof document === 'undefined' || !css) {
+        return style
+      }
+
+      const mountTarget = target ?? document.head
+      const existing = styleId ? document.getElementById(styleId) as HTMLStyleElement | null : null
+      const element = existing ?? document.createElement('style')
+
+      if (styleId) {
+        element.id = styleId
+      }
+
+      element.textContent = css
+
+      if (!existing) {
+        mountTarget.appendChild(element)
+      }
+
+      style.element = element
+      return style
+    },
+    unmount() {
+      style.element?.remove()
+      style.element = null
+    }
+  }
+
+  return style
 }
 
 export function createDyvoPalette(colors: DyvoPaletteColorMap, options: DyvoPaletteOptions = {}) {
   const css = generateDyvoPaletteCss(colors, options)
   const styleId = options.styleId ?? 'dyvo-custom-palette'
 
-  const palette: DyvoMountedPalette = {
-    css,
-    element: null,
-    mount(target?: ParentNode) {
-      if (typeof document === 'undefined' || !css) {
-        return palette
-      }
-
-      const mountTarget = target ?? document.head
-      const existing = styleId ? document.getElementById(styleId) as HTMLStyleElement | null : null
-      const style = existing ?? document.createElement('style')
-
-      if (styleId) {
-        style.id = styleId
-      }
-
-      style.textContent = css
-
-      if (!existing) {
-        mountTarget.appendChild(style)
-      }
-
-      palette.element = style
-      return palette
-    },
-    unmount() {
-      palette.element?.remove()
-      palette.element = null
-    }
-  }
-
-  return palette
+  return createDyvoMountedStyle(css, styleId)
 }

@@ -8,6 +8,7 @@ export {
 } from './colors'
 export type {
   DyvoMountedPalette,
+  DyvoMountedStyle,
   DyvoPaletteColorMap,
   DyvoPaletteOptions
 } from './colors'
