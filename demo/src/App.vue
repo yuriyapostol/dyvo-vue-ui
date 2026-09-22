@@ -2,13 +2,13 @@
 import { createDyvoPalette, DyvoBadge, DyvoUserBadge } from '../../src'
 
 createDyvoPalette({
-  brand: '#7c3aed'
+  brand: 'var(--dyvo-color-purple)'
 }).mount()
 
 const colors = ['info', 'tip', 'warning', 'danger', 'success', 'brand'] as const
 const variants = ['soft', 'accent', 'solid', 'outline', 'plain'] as const
 const sizes = ['small', 'medium', 'large'] as const
-const paletteColors = ['gray', 'blue', 'green', 'yellow', 'red', 'purple', 'brand'] as const
+const paletteColors = ['gray', 'blue', 'green', 'yellow', 'red', 'purple'] as const
 const paletteSteps = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] as const
 const semanticColors = ['info', 'tip', 'success', 'warning', 'danger'] as const
 </script>

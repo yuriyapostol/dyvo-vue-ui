@@ -227,6 +227,7 @@ This injects tokens such as:
 --dyvo-color-brand-50
 --dyvo-color-brand-100
 --dyvo-color-brand-900
+.dyvo-badge.color-brand
 ```
 
 The same color name can then be used like a built-in badge color:
@@ -263,6 +264,10 @@ Generated output follows the same CSS-only recipe used by the built-in colors:
   --dyvo-color-brand-700: color-mix(in srgb, var(--dyvo-color-brand) 60%, var(--dyvo-color-black, #000000));
   --dyvo-color-brand-800: color-mix(in srgb, var(--dyvo-color-brand) 40%, var(--dyvo-color-black, #000000));
   --dyvo-color-brand-900: color-mix(in srgb, var(--dyvo-color-brand) 20%, var(--dyvo-color-black, #000000));
+}
+
+.dyvo-badge.color-brand {
+  --dyvo-badge-color: var(--dyvo-color-brand);
 }
 ```
 

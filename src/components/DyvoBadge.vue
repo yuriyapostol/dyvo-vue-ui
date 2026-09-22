@@ -27,6 +27,10 @@ function normalizeColorName(value: string) {
   return value.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
+function isColorTokenName(value: string) {
+  return /^[a-z0-9_-]+$/i.test(value.trim())
+}
+
 const props = withDefaults(defineProps<{
   text?: string
   color?: DyvoBadgeColor
@@ -126,7 +130,16 @@ const passthroughClassTokens = computed(() => (
 ))
 
 const resolvedColor = computed(() => classConfig.value.color ?? props.color)
-const resolvedColorName = computed(() => normalizeColorName(resolvedColor.value) || 'tip')
+const resolvedColorIsToken = computed(() => (
+  Boolean(classConfig.value.color) || isColorTokenName(props.color)
+))
+const resolvedColorName = computed(() => {
+  if (resolvedColorIsToken.value) {
+    return normalizeColorName(resolvedColor.value) || 'tip'
+  }
+
+  return 'custom'
+})
 const resolvedVariant = computed(() => classConfig.value.variant ?? props.variant)
 const resolvedSize = computed(() => classConfig.value.size ?? props.size)
 const resolvedVerticalAlign = computed(() => classConfig.value.verticalAlign ?? props.verticalAlign)
@@ -138,12 +151,20 @@ const forwardedAttrs = computed(() => {
   return rest
 })
 
-const badgeStyle = computed<StyleValue>(() => [
-  attrs.style as StyleValue,
-  {
-    '--dyvo-badge-color': `var(--dyvo-color-${resolvedColorName.value}, var(--dyvo-color-tip, #3451b2))`
+const badgeStyle = computed<StyleValue>(() => {
+  const style = attrs.style as StyleValue
+
+  if (resolvedColorIsToken.value) {
+    return style
   }
-])
+
+  return [
+    style,
+    {
+      '--dyvo-badge-color': resolvedColor.value
+    }
+  ]
+})
 
 const tagName = computed(() => {
   if (props.href && !resolvedDisabled.value) {
@@ -462,6 +483,26 @@ a.dyvo-badge:hover {
 
 .dyvo-badge-label.has-image .dyvo-badge-body {
   padding-inline-start: var(--dyvo-badge-image-space);
+}
+
+.dyvo-badge.color-info {
+  --dyvo-badge-color: var(--dyvo-color-info, var(--dyvo-color-gray, #808080));
+}
+
+.dyvo-badge.color-tip {
+  --dyvo-badge-color: var(--dyvo-color-tip, var(--dyvo-color-blue, #3451b2));
+}
+
+.dyvo-badge.color-warning {
+  --dyvo-badge-color: var(--dyvo-color-warning, var(--dyvo-color-yellow, #d68000));
+}
+
+.dyvo-badge.color-danger {
+  --dyvo-badge-color: var(--dyvo-color-danger, var(--dyvo-color-red, #b8272c));
+}
+
+.dyvo-badge.color-success {
+  --dyvo-badge-color: var(--dyvo-color-success, var(--dyvo-color-green, #18794e));
 }
 
 </style>

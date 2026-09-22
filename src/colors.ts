@@ -2,6 +2,8 @@ export type DyvoPaletteColorMap = Record<string, string>
 
 export interface DyvoPaletteOptions {
   selector?: string
+  componentSelector?: string
+  includeComponentClasses?: boolean
   prefix?: string
   white?: string
   black?: string
@@ -68,15 +70,41 @@ function getPaletteCssRules(colors: DyvoPaletteColorMap, options: DyvoPaletteOpt
   return rules
 }
 
+function getPaletteColorNames(colors: DyvoPaletteColorMap) {
+  return Object.entries(colors)
+    .map(([rawName, rawValue]) => ({
+      name: normalizeTokenName(rawName),
+      value: rawValue.trim()
+    }))
+    .filter(({ name, value }) => name && value)
+}
+
+function getComponentCssRules(colors: DyvoPaletteColorMap, options: DyvoPaletteOptions = {}) {
+  if (options.includeComponentClasses === false) {
+    return []
+  }
+
+  const prefix = normalizePrefix(options.prefix ?? 'dyvo-color')
+  const componentSelector = options.componentSelector ?? '.dyvo-badge'
+
+  return getPaletteColorNames(colors).map(({ name }) => (
+    `${componentSelector}.color-${name} {\n  --dyvo-badge-color: var(--${prefix}-${name});\n}`
+  ))
+}
+
 export function generateDyvoPaletteCss(colors: DyvoPaletteColorMap, options: DyvoPaletteOptions = {}) {
   const selector = options.selector ?? ':root'
   const rules = getPaletteCssRules(colors, options)
+  const componentRules = getComponentCssRules(colors, options)
 
-  if (!rules.length) {
+  if (!rules.length && !componentRules.length) {
     return ''
   }
 
-  return `${selector} {\n${rules.join('\n')}\n}`
+  const blocks = rules.length ? [`${selector} {\n${rules.join('\n')}\n}`] : []
+  blocks.push(...componentRules)
+
+  return blocks.join('\n\n')
 }
 
 export function createDyvoPalette(colors: DyvoPaletteColorMap, options: DyvoPaletteOptions = {}) {
