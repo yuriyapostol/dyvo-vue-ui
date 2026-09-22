@@ -75,8 +75,10 @@
   --dyvo-color-purple-800: color-mix(in srgb, var(--dyvo-color-purple) 40%, var(--dyvo-color-black));
   --dyvo-color-purple-900: color-mix(in srgb, var(--dyvo-color-purple) 20%, var(--dyvo-color-black));
 
-  --dyvo-color-info: var(--dyvo-color-gray);
-  --dyvo-color-tip: var(--dyvo-color-blue);
+  --dyvo-color-primary: var(--dyvo-color-blue);
+  --dyvo-color-secondary: var(--dyvo-color-gray-500);
+  --dyvo-color-info: var(--dyvo-color-gray-800);
+  --dyvo-color-tip: var(--dyvo-color-purple);
   --dyvo-color-success: var(--dyvo-color-green);
   --dyvo-color-warning: var(--dyvo-color-yellow);
   --dyvo-color-danger: var(--dyvo-color-red);

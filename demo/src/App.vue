@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { createDyvoPalette, DyvoBadge, DyvoUserBadge } from '../../src'
+import { DyvoBadge, DyvoUserBadge } from '../../src'
 
-createDyvoPalette({
-  brand: 'var(--dyvo-color-purple)'
-}).mount()
-
-const colors = ['info', 'tip', 'warning', 'danger', 'success', 'brand'] as const
+const semanticColors = ['primary', 'secondary', 'info', 'tip', 'success', 'warning', 'danger'] as const
+const colors = semanticColors
 const variants = ['soft', 'accent', 'solid', 'outline', 'plain'] as const
 const sizes = ['small', 'medium', 'large'] as const
 const paletteColors = ['gray', 'blue', 'green', 'yellow', 'red', 'purple'] as const
 const paletteSteps = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] as const
-const semanticColors = ['info', 'tip', 'success', 'warning', 'danger'] as const
 </script>
 
 <template>
@@ -294,7 +290,7 @@ a {
 .demo-semantic-labels,
 .demo-semantic-colors {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
   gap: 6px;
 }
 

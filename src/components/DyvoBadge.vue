@@ -486,11 +486,19 @@ a.dyvo-badge:hover {
 }
 
 .dyvo-badge.color-info {
-  --dyvo-badge-color: var(--dyvo-color-info, var(--dyvo-color-gray, #808080));
+  --dyvo-badge-color: var(--dyvo-color-info, var(--dyvo-color-gray-800, #333333));
+}
+
+.dyvo-badge.color-primary {
+  --dyvo-badge-color: var(--dyvo-color-primary, var(--dyvo-color-blue, #3451b2));
+}
+
+.dyvo-badge.color-secondary {
+  --dyvo-badge-color: var(--dyvo-color-secondary, var(--dyvo-color-gray-500, #808080));
 }
 
 .dyvo-badge.color-tip {
-  --dyvo-badge-color: var(--dyvo-color-tip, var(--dyvo-color-blue, #3451b2));
+  --dyvo-badge-color: var(--dyvo-color-tip, var(--dyvo-color-purple, #6f42c1));
 }
 
 .dyvo-badge.color-warning {

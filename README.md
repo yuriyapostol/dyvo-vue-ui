@@ -71,7 +71,7 @@ Custom image content can be passed through the `image` slot:
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `text` | `string` | `''` | Text fallback when the default slot is empty. |
-| `color` | `string` | `'tip'` | Badge color. Built-in values are `info`, `tip`, `warning`, `danger`, and `success`; custom values resolve to `--dyvo-color-{name}`. |
+| `color` | `string` | `'tip'` | Badge color. Built-in values are `primary`, `secondary`, `info`, `tip`, `warning`, `danger`, and `success`; custom values resolve to `--dyvo-color-{name}`. |
 | `variant` | `'soft' \| 'accent' \| 'solid' \| 'outline' \| 'plain'` | `'soft'` | Visual style. |
 | `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Badge size. |
 | `verticalAlign` | `'unset' \| 'baseline' \| 'middle' \| 'super' \| 'sub'` | `'unset'` | CSS vertical alignment. |
@@ -123,7 +123,7 @@ If `github` is provided, the profile link defaults to `https://github.com/<handl
 | `avatarSrc` | `string` | `undefined` | Avatar image override. |
 | `avatarAlt` | `string` | `undefined` | Avatar alt text override. |
 | `text` | `string` | `undefined` | Visible label override. |
-| `color` | `string` | `'info'` | Badge color. Built-in values are `info`, `tip`, `warning`, `danger`, and `success`; custom values resolve to `--dyvo-color-{name}`. |
+| `color` | `string` | `'info'` | Badge color. Built-in values are `primary`, `secondary`, `info`, `tip`, `warning`, `danger`, and `success`; custom values resolve to `--dyvo-color-{name}`. |
 | `variant` | `'soft' \| 'accent' \| 'solid' \| 'outline' \| 'plain'` | `'soft'` | Visual style. |
 | `size` | `'small' \| 'medium' \| 'large'` | `'large'` | Badge size. |
 | `base` | `string` | `''` | Prefix for root-relative avatar image paths. |
@@ -199,6 +199,8 @@ Generated scale tokens use the `--dyvo-color-{name}-{step}` pattern:
 Semantic tokens:
 
 ```css
+--dyvo-color-primary
+--dyvo-color-secondary
 --dyvo-color-info
 --dyvo-color-tip
 --dyvo-color-success
@@ -215,7 +217,6 @@ Use `createDyvoPalette()` when an app should create a full color scale from one 
 import { createDyvoPalette } from '@yuriyapostol/dyvo-vue-ui'
 
 createDyvoPalette({
-  brand: '#7c3aed',
   ocean: '#0ea5e9'
 }).mount()
 ```
@@ -223,18 +224,17 @@ createDyvoPalette({
 This injects tokens such as:
 
 ```css
---dyvo-color-brand
---dyvo-color-brand-50
---dyvo-color-brand-100
---dyvo-color-brand-900
-.dyvo-badge.color-brand
+--dyvo-color-ocean
+--dyvo-color-ocean-50
+--dyvo-color-ocean-100
+--dyvo-color-ocean-900
+.dyvo-badge.color-ocean
 ```
 
 The same color name can then be used like a built-in badge color:
 
 ```vue
 <template>
-  <DyvoBadge color="brand" variant="accent">Brand</DyvoBadge>
   <DyvoBadge class="color-ocean variant-solid">Ocean</DyvoBadge>
 </template>
 ```
@@ -245,7 +245,7 @@ For build-time or file-based workflows, use `generateDyvoPaletteCss()` and write
 import { generateDyvoPaletteCss } from '@yuriyapostol/dyvo-vue-ui'
 
 const css = generateDyvoPaletteCss({
-  brand: '#7c3aed'
+  ocean: '#0ea5e9'
 })
 ```
 
@@ -253,21 +253,21 @@ Generated output follows the same CSS-only recipe used by the built-in colors:
 
 ```css
 :root {
-  --dyvo-color-brand: #7c3aed;
-  --dyvo-color-brand-50: color-mix(in srgb, var(--dyvo-color-brand) 10%, var(--dyvo-color-white, #ffffff));
-  --dyvo-color-brand-100: color-mix(in srgb, var(--dyvo-color-brand) 20%, var(--dyvo-color-white, #ffffff));
-  --dyvo-color-brand-200: color-mix(in srgb, var(--dyvo-color-brand) 40%, var(--dyvo-color-white, #ffffff));
-  --dyvo-color-brand-300: color-mix(in srgb, var(--dyvo-color-brand) 60%, var(--dyvo-color-white, #ffffff));
-  --dyvo-color-brand-400: color-mix(in srgb, var(--dyvo-color-brand) 80%, var(--dyvo-color-white, #ffffff));
-  --dyvo-color-brand-500: var(--dyvo-color-brand);
-  --dyvo-color-brand-600: color-mix(in srgb, var(--dyvo-color-brand) 80%, var(--dyvo-color-black, #000000));
-  --dyvo-color-brand-700: color-mix(in srgb, var(--dyvo-color-brand) 60%, var(--dyvo-color-black, #000000));
-  --dyvo-color-brand-800: color-mix(in srgb, var(--dyvo-color-brand) 40%, var(--dyvo-color-black, #000000));
-  --dyvo-color-brand-900: color-mix(in srgb, var(--dyvo-color-brand) 20%, var(--dyvo-color-black, #000000));
+  --dyvo-color-ocean: #0ea5e9;
+  --dyvo-color-ocean-50: color-mix(in srgb, var(--dyvo-color-ocean) 10%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-ocean-100: color-mix(in srgb, var(--dyvo-color-ocean) 20%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-ocean-200: color-mix(in srgb, var(--dyvo-color-ocean) 40%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-ocean-300: color-mix(in srgb, var(--dyvo-color-ocean) 60%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-ocean-400: color-mix(in srgb, var(--dyvo-color-ocean) 80%, var(--dyvo-color-white, #ffffff));
+  --dyvo-color-ocean-500: var(--dyvo-color-ocean);
+  --dyvo-color-ocean-600: color-mix(in srgb, var(--dyvo-color-ocean) 80%, var(--dyvo-color-black, #000000));
+  --dyvo-color-ocean-700: color-mix(in srgb, var(--dyvo-color-ocean) 60%, var(--dyvo-color-black, #000000));
+  --dyvo-color-ocean-800: color-mix(in srgb, var(--dyvo-color-ocean) 40%, var(--dyvo-color-black, #000000));
+  --dyvo-color-ocean-900: color-mix(in srgb, var(--dyvo-color-ocean) 20%, var(--dyvo-color-black, #000000));
 }
 
-.dyvo-badge.color-brand {
-  --dyvo-badge-color: var(--dyvo-color-brand);
+.dyvo-badge.color-ocean {
+  --dyvo-badge-color: var(--dyvo-color-ocean);
 }
 ```
 
