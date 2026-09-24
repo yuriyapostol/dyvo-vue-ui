@@ -5,7 +5,22 @@ const semanticColors = ['primary', 'secondary', 'info', 'tip', 'success', 'warni
 const colors = semanticColors
 const variants = ['soft', 'accent', 'solid', 'outline', 'plain'] as const
 const sizes = ['small', 'medium', 'large'] as const
-const paletteColors = ['gray', 'blue', 'green', 'yellow', 'red', 'purple'] as const
+const paletteColors = [
+  'gray',
+  'slate',
+  'blue',
+  'indigo',
+  'green',
+  'teal',
+  'cyan',
+  'lime',
+  'yellow',
+  'orange',
+  'red',
+  'rose',
+  'pink',
+  'purple'
+] as const
 const paletteSteps = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] as const
 </script>
 

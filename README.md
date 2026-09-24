@@ -174,10 +174,18 @@ Base colors:
 --dyvo-color-white
 --dyvo-color-black
 --dyvo-color-gray
+--dyvo-color-slate
 --dyvo-color-blue
+--dyvo-color-indigo
 --dyvo-color-green
+--dyvo-color-teal
+--dyvo-color-cyan
+--dyvo-color-lime
 --dyvo-color-yellow
+--dyvo-color-orange
 --dyvo-color-red
+--dyvo-color-rose
+--dyvo-color-pink
 --dyvo-color-purple
 ```
 

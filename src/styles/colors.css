@@ -3,10 +3,18 @@
   --dyvo-color-black: #000000;
 
   --dyvo-color-gray: #808080;
+  --dyvo-color-slate: #64748b;
   --dyvo-color-blue: #3451b2;
+  --dyvo-color-indigo: #4f46e5;
   --dyvo-color-green: #18794e;
+  --dyvo-color-teal: #0f766e;
+  --dyvo-color-cyan: #0891b2;
+  --dyvo-color-lime: #65a30d;
   --dyvo-color-yellow: #d68000;
+  --dyvo-color-orange: #ea580c;
   --dyvo-color-red: #b8272c;
+  --dyvo-color-rose: #e11d48;
+  --dyvo-color-pink: #db2777;
   --dyvo-color-purple: #6f42c1;
 
   --dyvo-color-gray-50: color-mix(in srgb, var(--dyvo-color-gray) 10%, var(--dyvo-color-white));
@@ -20,6 +28,17 @@
   --dyvo-color-gray-800: color-mix(in srgb, var(--dyvo-color-gray) 40%, var(--dyvo-color-black));
   --dyvo-color-gray-900: color-mix(in srgb, var(--dyvo-color-gray) 20%, var(--dyvo-color-black));
 
+  --dyvo-color-slate-50: color-mix(in srgb, var(--dyvo-color-slate) 10%, var(--dyvo-color-white));
+  --dyvo-color-slate-100: color-mix(in srgb, var(--dyvo-color-slate) 20%, var(--dyvo-color-white));
+  --dyvo-color-slate-200: color-mix(in srgb, var(--dyvo-color-slate) 40%, var(--dyvo-color-white));
+  --dyvo-color-slate-300: color-mix(in srgb, var(--dyvo-color-slate) 60%, var(--dyvo-color-white));
+  --dyvo-color-slate-400: color-mix(in srgb, var(--dyvo-color-slate) 80%, var(--dyvo-color-white));
+  --dyvo-color-slate-500: var(--dyvo-color-slate);
+  --dyvo-color-slate-600: color-mix(in srgb, var(--dyvo-color-slate) 80%, var(--dyvo-color-black));
+  --dyvo-color-slate-700: color-mix(in srgb, var(--dyvo-color-slate) 60%, var(--dyvo-color-black));
+  --dyvo-color-slate-800: color-mix(in srgb, var(--dyvo-color-slate) 40%, var(--dyvo-color-black));
+  --dyvo-color-slate-900: color-mix(in srgb, var(--dyvo-color-slate) 20%, var(--dyvo-color-black));
+
   --dyvo-color-blue-50: color-mix(in srgb, var(--dyvo-color-blue) 10%, var(--dyvo-color-white));
   --dyvo-color-blue-100: color-mix(in srgb, var(--dyvo-color-blue) 20%, var(--dyvo-color-white));
   --dyvo-color-blue-200: color-mix(in srgb, var(--dyvo-color-blue) 40%, var(--dyvo-color-white));
@@ -30,6 +49,17 @@
   --dyvo-color-blue-700: color-mix(in srgb, var(--dyvo-color-blue) 60%, var(--dyvo-color-black));
   --dyvo-color-blue-800: color-mix(in srgb, var(--dyvo-color-blue) 40%, var(--dyvo-color-black));
   --dyvo-color-blue-900: color-mix(in srgb, var(--dyvo-color-blue) 20%, var(--dyvo-color-black));
+
+  --dyvo-color-indigo-50: color-mix(in srgb, var(--dyvo-color-indigo) 10%, var(--dyvo-color-white));
+  --dyvo-color-indigo-100: color-mix(in srgb, var(--dyvo-color-indigo) 20%, var(--dyvo-color-white));
+  --dyvo-color-indigo-200: color-mix(in srgb, var(--dyvo-color-indigo) 40%, var(--dyvo-color-white));
+  --dyvo-color-indigo-300: color-mix(in srgb, var(--dyvo-color-indigo) 60%, var(--dyvo-color-white));
+  --dyvo-color-indigo-400: color-mix(in srgb, var(--dyvo-color-indigo) 80%, var(--dyvo-color-white));
+  --dyvo-color-indigo-500: var(--dyvo-color-indigo);
+  --dyvo-color-indigo-600: color-mix(in srgb, var(--dyvo-color-indigo) 80%, var(--dyvo-color-black));
+  --dyvo-color-indigo-700: color-mix(in srgb, var(--dyvo-color-indigo) 60%, var(--dyvo-color-black));
+  --dyvo-color-indigo-800: color-mix(in srgb, var(--dyvo-color-indigo) 40%, var(--dyvo-color-black));
+  --dyvo-color-indigo-900: color-mix(in srgb, var(--dyvo-color-indigo) 20%, var(--dyvo-color-black));
 
   --dyvo-color-green-50: color-mix(in srgb, var(--dyvo-color-green) 10%, var(--dyvo-color-white));
   --dyvo-color-green-100: color-mix(in srgb, var(--dyvo-color-green) 20%, var(--dyvo-color-white));
@@ -42,6 +72,39 @@
   --dyvo-color-green-800: color-mix(in srgb, var(--dyvo-color-green) 40%, var(--dyvo-color-black));
   --dyvo-color-green-900: color-mix(in srgb, var(--dyvo-color-green) 20%, var(--dyvo-color-black));
 
+  --dyvo-color-teal-50: color-mix(in srgb, var(--dyvo-color-teal) 10%, var(--dyvo-color-white));
+  --dyvo-color-teal-100: color-mix(in srgb, var(--dyvo-color-teal) 20%, var(--dyvo-color-white));
+  --dyvo-color-teal-200: color-mix(in srgb, var(--dyvo-color-teal) 40%, var(--dyvo-color-white));
+  --dyvo-color-teal-300: color-mix(in srgb, var(--dyvo-color-teal) 60%, var(--dyvo-color-white));
+  --dyvo-color-teal-400: color-mix(in srgb, var(--dyvo-color-teal) 80%, var(--dyvo-color-white));
+  --dyvo-color-teal-500: var(--dyvo-color-teal);
+  --dyvo-color-teal-600: color-mix(in srgb, var(--dyvo-color-teal) 80%, var(--dyvo-color-black));
+  --dyvo-color-teal-700: color-mix(in srgb, var(--dyvo-color-teal) 60%, var(--dyvo-color-black));
+  --dyvo-color-teal-800: color-mix(in srgb, var(--dyvo-color-teal) 40%, var(--dyvo-color-black));
+  --dyvo-color-teal-900: color-mix(in srgb, var(--dyvo-color-teal) 20%, var(--dyvo-color-black));
+
+  --dyvo-color-cyan-50: color-mix(in srgb, var(--dyvo-color-cyan) 10%, var(--dyvo-color-white));
+  --dyvo-color-cyan-100: color-mix(in srgb, var(--dyvo-color-cyan) 20%, var(--dyvo-color-white));
+  --dyvo-color-cyan-200: color-mix(in srgb, var(--dyvo-color-cyan) 40%, var(--dyvo-color-white));
+  --dyvo-color-cyan-300: color-mix(in srgb, var(--dyvo-color-cyan) 60%, var(--dyvo-color-white));
+  --dyvo-color-cyan-400: color-mix(in srgb, var(--dyvo-color-cyan) 80%, var(--dyvo-color-white));
+  --dyvo-color-cyan-500: var(--dyvo-color-cyan);
+  --dyvo-color-cyan-600: color-mix(in srgb, var(--dyvo-color-cyan) 80%, var(--dyvo-color-black));
+  --dyvo-color-cyan-700: color-mix(in srgb, var(--dyvo-color-cyan) 60%, var(--dyvo-color-black));
+  --dyvo-color-cyan-800: color-mix(in srgb, var(--dyvo-color-cyan) 40%, var(--dyvo-color-black));
+  --dyvo-color-cyan-900: color-mix(in srgb, var(--dyvo-color-cyan) 20%, var(--dyvo-color-black));
+
+  --dyvo-color-lime-50: color-mix(in srgb, var(--dyvo-color-lime) 10%, var(--dyvo-color-white));
+  --dyvo-color-lime-100: color-mix(in srgb, var(--dyvo-color-lime) 20%, var(--dyvo-color-white));
+  --dyvo-color-lime-200: color-mix(in srgb, var(--dyvo-color-lime) 40%, var(--dyvo-color-white));
+  --dyvo-color-lime-300: color-mix(in srgb, var(--dyvo-color-lime) 60%, var(--dyvo-color-white));
+  --dyvo-color-lime-400: color-mix(in srgb, var(--dyvo-color-lime) 80%, var(--dyvo-color-white));
+  --dyvo-color-lime-500: var(--dyvo-color-lime);
+  --dyvo-color-lime-600: color-mix(in srgb, var(--dyvo-color-lime) 80%, var(--dyvo-color-black));
+  --dyvo-color-lime-700: color-mix(in srgb, var(--dyvo-color-lime) 60%, var(--dyvo-color-black));
+  --dyvo-color-lime-800: color-mix(in srgb, var(--dyvo-color-lime) 40%, var(--dyvo-color-black));
+  --dyvo-color-lime-900: color-mix(in srgb, var(--dyvo-color-lime) 20%, var(--dyvo-color-black));
+
   --dyvo-color-yellow-50: color-mix(in srgb, var(--dyvo-color-yellow) 10%, var(--dyvo-color-white));
   --dyvo-color-yellow-100: color-mix(in srgb, var(--dyvo-color-yellow) 20%, var(--dyvo-color-white));
   --dyvo-color-yellow-200: color-mix(in srgb, var(--dyvo-color-yellow) 40%, var(--dyvo-color-white));
@@ -53,6 +116,17 @@
   --dyvo-color-yellow-800: color-mix(in srgb, var(--dyvo-color-yellow) 40%, var(--dyvo-color-black));
   --dyvo-color-yellow-900: color-mix(in srgb, var(--dyvo-color-yellow) 20%, var(--dyvo-color-black));
 
+  --dyvo-color-orange-50: color-mix(in srgb, var(--dyvo-color-orange) 10%, var(--dyvo-color-white));
+  --dyvo-color-orange-100: color-mix(in srgb, var(--dyvo-color-orange) 20%, var(--dyvo-color-white));
+  --dyvo-color-orange-200: color-mix(in srgb, var(--dyvo-color-orange) 40%, var(--dyvo-color-white));
+  --dyvo-color-orange-300: color-mix(in srgb, var(--dyvo-color-orange) 60%, var(--dyvo-color-white));
+  --dyvo-color-orange-400: color-mix(in srgb, var(--dyvo-color-orange) 80%, var(--dyvo-color-white));
+  --dyvo-color-orange-500: var(--dyvo-color-orange);
+  --dyvo-color-orange-600: color-mix(in srgb, var(--dyvo-color-orange) 80%, var(--dyvo-color-black));
+  --dyvo-color-orange-700: color-mix(in srgb, var(--dyvo-color-orange) 60%, var(--dyvo-color-black));
+  --dyvo-color-orange-800: color-mix(in srgb, var(--dyvo-color-orange) 40%, var(--dyvo-color-black));
+  --dyvo-color-orange-900: color-mix(in srgb, var(--dyvo-color-orange) 20%, var(--dyvo-color-black));
+
   --dyvo-color-red-50: color-mix(in srgb, var(--dyvo-color-red) 10%, var(--dyvo-color-white));
   --dyvo-color-red-100: color-mix(in srgb, var(--dyvo-color-red) 20%, var(--dyvo-color-white));
   --dyvo-color-red-200: color-mix(in srgb, var(--dyvo-color-red) 40%, var(--dyvo-color-white));
@@ -63,6 +137,28 @@
   --dyvo-color-red-700: color-mix(in srgb, var(--dyvo-color-red) 60%, var(--dyvo-color-black));
   --dyvo-color-red-800: color-mix(in srgb, var(--dyvo-color-red) 40%, var(--dyvo-color-black));
   --dyvo-color-red-900: color-mix(in srgb, var(--dyvo-color-red) 20%, var(--dyvo-color-black));
+
+  --dyvo-color-rose-50: color-mix(in srgb, var(--dyvo-color-rose) 10%, var(--dyvo-color-white));
+  --dyvo-color-rose-100: color-mix(in srgb, var(--dyvo-color-rose) 20%, var(--dyvo-color-white));
+  --dyvo-color-rose-200: color-mix(in srgb, var(--dyvo-color-rose) 40%, var(--dyvo-color-white));
+  --dyvo-color-rose-300: color-mix(in srgb, var(--dyvo-color-rose) 60%, var(--dyvo-color-white));
+  --dyvo-color-rose-400: color-mix(in srgb, var(--dyvo-color-rose) 80%, var(--dyvo-color-white));
+  --dyvo-color-rose-500: var(--dyvo-color-rose);
+  --dyvo-color-rose-600: color-mix(in srgb, var(--dyvo-color-rose) 80%, var(--dyvo-color-black));
+  --dyvo-color-rose-700: color-mix(in srgb, var(--dyvo-color-rose) 60%, var(--dyvo-color-black));
+  --dyvo-color-rose-800: color-mix(in srgb, var(--dyvo-color-rose) 40%, var(--dyvo-color-black));
+  --dyvo-color-rose-900: color-mix(in srgb, var(--dyvo-color-rose) 20%, var(--dyvo-color-black));
+
+  --dyvo-color-pink-50: color-mix(in srgb, var(--dyvo-color-pink) 10%, var(--dyvo-color-white));
+  --dyvo-color-pink-100: color-mix(in srgb, var(--dyvo-color-pink) 20%, var(--dyvo-color-white));
+  --dyvo-color-pink-200: color-mix(in srgb, var(--dyvo-color-pink) 40%, var(--dyvo-color-white));
+  --dyvo-color-pink-300: color-mix(in srgb, var(--dyvo-color-pink) 60%, var(--dyvo-color-white));
+  --dyvo-color-pink-400: color-mix(in srgb, var(--dyvo-color-pink) 80%, var(--dyvo-color-white));
+  --dyvo-color-pink-500: var(--dyvo-color-pink);
+  --dyvo-color-pink-600: color-mix(in srgb, var(--dyvo-color-pink) 80%, var(--dyvo-color-black));
+  --dyvo-color-pink-700: color-mix(in srgb, var(--dyvo-color-pink) 60%, var(--dyvo-color-black));
+  --dyvo-color-pink-800: color-mix(in srgb, var(--dyvo-color-pink) 40%, var(--dyvo-color-black));
+  --dyvo-color-pink-900: color-mix(in srgb, var(--dyvo-color-pink) 20%, var(--dyvo-color-black));
 
   --dyvo-color-purple-50: color-mix(in srgb, var(--dyvo-color-purple) 10%, var(--dyvo-color-white));
   --dyvo-color-purple-100: color-mix(in srgb, var(--dyvo-color-purple) 20%, var(--dyvo-color-white));
